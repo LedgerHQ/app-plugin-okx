@@ -96,8 +96,7 @@ static void set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) 
                    msg->msgLength);
 }
 
-void handle_query_contract_ui(void *parameters) {
-    ethQueryContractUI_t *msg = (ethQueryContractUI_t *) parameters;
+void handle_query_contract_ui(ethQueryContractUI_t *msg) {
     context_t *context = (context_t *) msg->pluginContext;
 
     // msg->title is the upper line displayed on the device.

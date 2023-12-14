@@ -81,7 +81,7 @@ PATH_APP_LOAD_PARAMS = "44'/60'"   # purpose=coin(44) / coin_type=Testnet(1)
 #   * It must at least contains one value.
 #   * Values can be the app ticker or anything else but should be unique.
 VARIANT_PARAM = COIN
-VARIANT_VALUES = OKX Web3
+VARIANT_VALUES = okx_web3
 
 # Enabling DEBUG flag will enable PRINTF and disable optimizations
 #DEBUG = 1
@@ -126,5 +126,7 @@ DISABLE_STANDARD_SNPRINTF = 1
 #DISABLE_STANDARD_USB = 1
 DISABLE_STANDARD_WEBUSB = 1
 DISABLE_STANDARD_BAGL_UX_FLOW = 1
+DISABLE_DEBUG_LEDGER_ASSERT = 1
+DISABLE_DEBUG_THROW = 1
 
 include $(BOLOS_SDK)/Makefile.standard_app
