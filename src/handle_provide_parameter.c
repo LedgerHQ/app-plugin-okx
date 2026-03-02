@@ -1,17 +1,17 @@
 #include "okx_plugin.h"
 
 // Invest
-const u_int8_t okx_selector_deposit[] = {0xc4, 0x1a, 0x3b, 0xe8};            // 0xc41a3be8;
-const u_int8_t okx_selector_deposit_and_stake[] = {0xb5, 0xf5, 0x34, 0xde};  // 0xb5f534de;
-const u_int8_t okx_selector_stake[] = {0x36, 0x5f, 0xa1, 0xb1};              // 0x365fa1b1;
+const uint8_t okx_selector_deposit[] = {0xc4, 0x1a, 0x3b, 0xe8};            // 0xc41a3be8;
+const uint8_t okx_selector_deposit_and_stake[] = {0xb5, 0xf5, 0x34, 0xde};  // 0xb5f534de;
+const uint8_t okx_selector_stake[] = {0x36, 0x5f, 0xa1, 0xb1};              // 0x365fa1b1;
 
 // Redeem
-const u_int8_t okx_selector_unstake[] = {0x3c, 0xd9, 0x0f, 0x2d};               // 0x3cd90f2d;
-const u_int8_t okx_selector_unstake_and_withdraw[] = {0xad, 0x54, 0x93, 0x2d};  // 0xad54932d;
-const u_int8_t okx_selector_withdraw[] = {0x8c, 0xfb, 0x1b, 0xc3};              // 0x8cfb1bc3;
+const uint8_t okx_selector_unstake[] = {0x3c, 0xd9, 0x0f, 0x2d};               // 0x3cd90f2d;
+const uint8_t okx_selector_unstake_and_withdraw[] = {0xad, 0x54, 0x93, 0x2d};  // 0xad54932d;
+const uint8_t okx_selector_withdraw[] = {0x8c, 0xfb, 0x1b, 0xc3};              // 0x8cfb1bc3;
 
 // Claim
-const u_int8_t okx_selector_claim_reward[] = {0xd9, 0x23, 0x8f, 0x08};  // 0xd9238f08;
+const uint8_t okx_selector_claim_reward[] = {0xd9, 0x23, 0x8f, 0x08};  // 0xd9238f08;
 
 // Earn
 #define EARN_STAKE_TOKEN_IN_PARAMS_COUNT          3
@@ -45,7 +45,7 @@ static void handle_okx_earn_stake(ethPluginProvideParameter_t *msg, context_t *c
             // find call data selector line
             if (msg->parameterOffset ==
                 PARAMETER_LENGTH * EARN_STAKE_CALL_DATA_SELECTOR_LINE_OFFSET + SELECTOR_SIZE) {
-                u_int16_t calls_offset =
+                uint16_t calls_offset =
                     U2BE(msg->parameter, PARAMETER_LENGTH - EARN_STAKE_PARAM_PREFIX_LENGTH);
                 context->earn_calls_selector_offset =
                     calls_offset / PARAMETER_LENGTH + EARN_STAKE_BASE_LINE_OFFSET;
@@ -59,7 +59,7 @@ static void handle_okx_earn_stake(ethPluginProvideParameter_t *msg, context_t *c
             if (context->earn_calls_selector_offset != 0 &&
                 msg->parameterOffset ==
                     PARAMETER_LENGTH * context->earn_calls_selector_offset + SELECTOR_SIZE) {
-                u_int8_t selector[SELECTOR_SIZE];
+                uint8_t selector[SELECTOR_SIZE];
                 copy_parameter(selector, msg->parameter, SELECTOR_SIZE);
                 if (memcmp(selector, okx_selector_deposit, SELECTOR_SIZE) == 0 ||
                     memcmp(selector, okx_selector_deposit_and_stake, SELECTOR_SIZE) == 0 ||
@@ -87,7 +87,7 @@ static void handle_okx_earn_stake(ethPluginProvideParameter_t *msg, context_t *c
                     context->earn_token_in_count);
                 // token out line number，EARN_STAKE_BASE_LINE_OFFSET is the initial number, a fixed
                 // value.
-                u_int16_t token_out_count_line =
+                uint16_t token_out_count_line =
                     EARN_STAKE_BASE_LINE_OFFSET +
                     context->earn_token_in_count * EARN_STAKE_TOKEN_IN_PARAMS_COUNT;
                 PRINTF(
@@ -107,13 +107,13 @@ static void handle_okx_earn_stake(ethPluginProvideParameter_t *msg, context_t *c
                                 (EARN_STAKE_BASE_LINE_OFFSET +
                                  context->earn_token_in_count * EARN_STAKE_TOKEN_IN_PARAMS_COUNT) +
                             SELECTOR_SIZE) {
-                    u_int16_t current_line =
+                    uint16_t current_line =
                         (msg->parameterOffset - SELECTOR_SIZE) / PARAMETER_LENGTH;
-                    u_int16_t current_sub_line = (current_line - EARN_STAKE_BASE_LINE_OFFSET) %
-                                                 EARN_STAKE_TOKEN_IN_PARAMS_COUNT;
+                    uint16_t current_sub_line = (current_line - EARN_STAKE_BASE_LINE_OFFSET) %
+                                                EARN_STAKE_TOKEN_IN_PARAMS_COUNT;
                     if (current_sub_line == 1) {  // token amount
-                        u_int16_t line = (current_line - EARN_STAKE_BASE_LINE_OFFSET) /
-                                         EARN_STAKE_TOKEN_IN_PARAMS_COUNT;
+                        uint16_t line = (current_line - EARN_STAKE_BASE_LINE_OFFSET) /
+                                        EARN_STAKE_TOKEN_IN_PARAMS_COUNT;
                         if (line == 0) {
                             copy_parameter(context->token_in_amount1,
                                            msg->parameter,
@@ -151,14 +151,14 @@ static void handle_okx_earn_stake(ethPluginProvideParameter_t *msg, context_t *c
                                             context->earn_token_out_count *
                                                 EARN_STAKE_TOKEN_OUT_PARAMS_COUNT) +
                             SELECTOR_SIZE) {
-                    u_int16_t current_line =
+                    uint16_t current_line =
                         (msg->parameterOffset - SELECTOR_SIZE) / PARAMETER_LENGTH;
-                    u_int16_t current_sub_line =
+                    uint16_t current_sub_line =
                         (current_line - context->earn_token_out_count_offset) %
                         EARN_STAKE_TOKEN_OUT_PARAMS_COUNT;
                     if (current_sub_line == 0) {  // token contract amount
-                        u_int16_t line = (current_line - context->earn_token_out_count_offset) /
-                                         EARN_STAKE_TOKEN_OUT_PARAMS_COUNT;
+                        uint16_t line = (current_line - context->earn_token_out_count_offset) /
+                                        EARN_STAKE_TOKEN_OUT_PARAMS_COUNT;
 
                         PRINTF(
                             "-- OKX PLUGIN ************************************* TOKEN OUT DATA "
